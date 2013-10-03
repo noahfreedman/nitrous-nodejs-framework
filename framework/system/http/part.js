@@ -132,6 +132,8 @@ module.exports = {
 
 	_id: 'httpPart',
 	
+	prototype: HttpPart.prototype,
+	
 	create: function(message, headers) {
 		return new HttpPart(message, headers);
 	}

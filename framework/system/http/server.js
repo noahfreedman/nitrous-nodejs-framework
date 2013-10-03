@@ -241,6 +241,8 @@ $.object.extend(HttpServer.prototype,
 module.exports = {
 
 	_id: 'httpServer',
+	
+	prototype: HttpServer.prototype,
 
 	create: function(port) {
 		return new HttpServer(port);

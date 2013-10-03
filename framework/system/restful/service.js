@@ -518,6 +518,8 @@ module.exports = {
 
 	_id: 'restfulService',
 	
+	prototype: RestfulService.prototype,
+	
 	create: function(server) {
 		return new RestfulService(server);
 	}

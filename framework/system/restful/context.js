@@ -45,6 +45,8 @@ module.exports = {
 
 	_id: 'restfulContext',
 	
+	prototype: RestfulContext.prototype,
+	
 	create: function(service, request, response, session) {
 		return new RestfulContext(service, request, response, session);
 	}

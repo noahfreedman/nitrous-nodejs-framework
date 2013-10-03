@@ -166,6 +166,8 @@ module.exports = {
 
 	_id: 'httpSession',
 	
+	prototype: HttpSession.prototype,
+	
 	create: function(server, request, response) {
 		return new HttpSession(server, request, response);
 	}

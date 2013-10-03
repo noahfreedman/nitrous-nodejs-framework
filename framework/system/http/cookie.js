@@ -129,6 +129,8 @@ module.exports = {
 
 	_id: 'httpCookie',
 	
+	prototype: HttpCookie.prototype,
+	
 	create: function(name, value, expiry, domain, path) {
 		return new HttpCookie(name, value, expiry, domain, path);
 	}

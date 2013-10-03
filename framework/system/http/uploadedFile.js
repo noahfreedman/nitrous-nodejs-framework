@@ -59,6 +59,8 @@ module.exports = {
 
 	_id: 'httpUploadedFile',
 	
+	prototype: HttpUploadedFile.prototype,
+	
 	create: function(part) {
 		return new HttpUploadedFile(part);
 	}

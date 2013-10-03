@@ -196,6 +196,8 @@ module.exports = {
 
 	_id: 'httpResponse',
 	
+	prototype: HttpResponse.prototype,
+	
 	create: function(server, response) {
 		return new HttpResponse(server, response);
 	}

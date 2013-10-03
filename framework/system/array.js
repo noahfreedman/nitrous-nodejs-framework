@@ -65,6 +65,19 @@ module.exports = {
 	},
 	
 	/**
+	 * Returns a clone instance of the given array.
+	 *
+	 * @param array array
+	 *	The array to create the clone from.
+	 *
+	 * @return array
+	 *	Returns the clone array.
+	 */
+	clone: function(array) {
+		return ([]).concat(array);
+	},
+	
+	/**
 	 * Returns an array containing the values that are present in the base
 	 * array, but not in the subsequent ones.
 	 *

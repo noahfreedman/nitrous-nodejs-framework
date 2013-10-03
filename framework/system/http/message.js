@@ -611,6 +611,8 @@ module.exports = {
 
 	_id: 'httpMessage',
 	
+	prototype: HttpMessage.prototype,
+	
 	create: function(server, message) {
 		return new HttpMessage(server, message);
 	}

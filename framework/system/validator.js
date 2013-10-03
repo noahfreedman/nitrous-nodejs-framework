@@ -524,6 +524,8 @@ $.object.extend(Validator.prototype,
 module.exports = {
 
 	_id: 'validator',
+
+	prototype: Validator.prototype,
 	
 	create: function(schema) {
 		return new Validator(schema);
