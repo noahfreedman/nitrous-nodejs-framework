@@ -425,7 +425,6 @@ $.object.extend(HttpMessage.prototype,
 			
 				// Attempt to decode the content and call the callback
 				this.body = JSON.parse(content);
-				callback.call(this);
 			
 			} catch (e) {
 				
@@ -435,8 +434,12 @@ $.object.extend(HttpMessage.prototype,
 				);
 				
 				message.socket.destroy();
+				return;
 				
 			}
+			
+			// Invoke the referenced callback
+			callback.call(this);
 		
 		});
 		

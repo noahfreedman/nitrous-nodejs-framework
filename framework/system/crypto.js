@@ -48,7 +48,7 @@ module.exports = {
 	hash: function(algorithm, value) {
 	
 		if(!value) {
-			value = new Date().getTime();
+			value = 'time-' + this.random() + '-' + (new Date().getTime());
 		}
 	
 		return $crypto.createHash(algorithm)

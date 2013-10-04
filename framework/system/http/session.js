@@ -109,7 +109,16 @@ $.object.extend(HttpSession.prototype,
 	
 		// Delete the old session file
 		if(this.id) {
-			this._deleteSessionFromFileSystem();
+			
+			try { 
+			
+				this._deleteSessionFromFileSystem(); 
+				
+			} catch (e) {
+			
+				$.error('HttpSession: ' + e.message);
+				
+			}
 		}
 		
 		// Define the session cookie in the response and update the existing id
