@@ -476,6 +476,23 @@ $.object.extend(Validator.prototype,
 			
 		};
 		
+		// Builds a validator result callback
+		var build_validator_callback = function(validator, document, attribute) {
+		
+			return function(success) {
+				
+				// This validator is complete
+				++vpValidatorComplete;
+			
+				// Print debug info, handle the validator result and check the overall validation for async callbacks
+				$.debug('Validator: ' + validator + ' ' + attribute + ' ' + success);
+				handle_validator_result.call(vpContext, validator, attribute, success);
+				vpValidatorIssueComplete && check_validation_result.call(vpContext);
+				
+			};
+		
+		};
+		
 		// Go through all the rules
 		for(var i in rules) {
 			var rule = rules[i];
@@ -503,17 +520,10 @@ $.object.extend(Validator.prototype,
 				++vpValidatorCount;
 				
 				// Invoke the validator callback
-				validatorCallback.call(undefined, document, attribute, document[attribute], validatorOptions, function(success) {
-				
-					// This validator is complete
-					++vpValidatorComplete;
-				
-					// Print debug info, handle the validator result and check the overall validation for async callbacks
-					$.debug('Validator: ' + validator + ' ' + attribute + ' ' + success);
-					handle_validator_result.call(vpContext, validator, attribute, success);
-					vpValidatorIssueComplete && check_validation_result.call(vpContext);
-					
-				});
+				validatorCallback.call(undefined, document, attribute, 
+					document[attribute], validatorOptions, 
+					build_validator_callback.call(this, validator, document, attribute)
+				);
 			
 			}
 		
