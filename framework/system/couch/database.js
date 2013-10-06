@@ -83,7 +83,6 @@ $.object.extend(CouchDatabase.prototype,
 			if(path instanceof Array) {
 		
 				// Clone the path to avoid modifying the original one
-				console.log('>', path);
 				var path = $.array.clone(path);
 				
 				// Encode all path components
@@ -92,7 +91,6 @@ $.object.extend(CouchDatabase.prototype,
 				}
 			
 				// Join all components together
-				console.log('>', path);
 				fullPath += path.join('/');
 			}
 			
@@ -180,6 +178,85 @@ $.object.extend(CouchDatabase.prototype,
 		
 		$.debug('CouchDatabase: preparing message...');
 		message.prepare();
+		
+	},
+	
+	/**
+	 * Performs a POST or PUT request to CouchDB, depending on wether or not
+	 * the property "_id" is defined in the given document.
+	 *
+	 * @param object document
+	 *	The document to create or update in the database.
+	 *
+	 * @param object context
+	 *	The context to be applied to the callback method.
+	 *
+	 * @param function(success, id, revision) callback
+	 *	The callback to handle the completion event.
+	 */
+	store: function() {
+	
+		// Load arguments according to length
+		var document, context, callback;
+		
+		switch(arguments.length) {
+		
+			case 2:
+				document = arguments[0];
+				callback = arguments[1];
+			break;
+			
+			case 3:
+				document = arguments[0];
+				context = arguments[1];
+				callback = arguments[2];
+			break;
+			
+			default:
+				throw 'Invalid argument count.';
+				
+		}
+		
+		// Determine the method and request path
+		var path = [ this.database ];
+		var method;
+		
+		if(document._id) {
+			path.push(document._id);
+			method = 'PUT';
+		} else {
+			method = 'POST';
+		}
+		
+		// Build the request options
+		var options = this._buildRequestOptions(method, path);
+		options.headers['Content-Type'] = 'application/json';
+		
+		var _this = this;
+		
+		// Create the request
+		var request = $http.request(options, function(message) {
+			_this._prepareRequestedMessage(message, function(response) {
+			
+				// Get the response body
+				var result = response.body;
+				
+				// Invoke the given callback
+				if(!result.error) {
+					callback.call(context, result.ok, result.id, result.rev);
+					return;
+				}
+				
+				// Log the couch error message
+				$.error('CouchDatabase: error=' + result.error + '; reason=' + result.reason);
+			
+			});
+		});
+		
+		// Write the request output data and execute it
+		$.debug('CouchDatabase: ' + method + ' ' + options.path);
+		request.write(JSON.stringify(document));
+		request.end();
 		
 	},
 	

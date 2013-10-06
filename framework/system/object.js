@@ -19,6 +19,12 @@
 //
 // =============================================================================
 
+$.using(
+
+	'system.array'
+
+);
+
 module.exports = {
 
 	_id: 'object',
@@ -39,6 +45,11 @@ module.exports = {
 		if(!object || 'object' !== typeof object) {
 			return object;
 		}
+		
+		// Clone an array
+		if(object instanceof Array) {
+			return $.array.clone(object);
+		}
 	
 		// Create an empty object
 		var clone = {};
@@ -50,7 +61,11 @@ module.exports = {
 			
 			// Defined objects (object and array)
 			if(value && 'object' === typeof value) {
-				clone[property] = this.clone(value);
+			
+				// Clone arrays and objects
+				clone[property] = value instanceof Array ?
+					$.array.clone(value) : this.clone(value);
+					
 				continue;
 			}
 		

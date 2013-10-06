@@ -74,7 +74,7 @@ $.object.extend(HttpResponse.prototype,
 		}
 		
 		// Add the 'Set-Cookie' header
-		if(this._cookies.length > 0) {
+		if(!$.object.isEmpty(this._cookies)) {
 			
 			var cookies = [];
 		
@@ -131,9 +131,8 @@ $.object.extend(HttpResponse.prototype,
 	 *	The path this cookie applies to.
 	 */
 	setCookie: function(name, value, expiry, domain, path) {
-		this._cookies.push(
-			$.httpCookie.create(name, value, expiry, domain, path)
-		);
+		this._cookies[name] =
+			$.httpCookie.create(name, value, expiry, domain, path);
 	},
 
 	/**

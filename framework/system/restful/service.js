@@ -286,7 +286,7 @@ $.object.extend(RestfulService.prototype,
 					var index = 0;
 					var matchIndex = 1;
 					
-					while((index = pattern.indexOf('$', index)) > -1) {
+					while((index = pattern.indexOf('%', index)) > -1) {
 					
 						// Add the current match to the parameters array
 						parameters.push(matches[matchIndex]);
@@ -397,16 +397,16 @@ $.object.extend(RestfulService.prototype,
 		if(pattern) {
 		
 			// Make sure the pattern is valid
-			if(!(/^(\/|(\/(\w|\$s|\$d|\$w|\$f)+)+)$/i).test(pattern)) {
+			if(!(/^(\/|(\/(\w|\%s|\%d|\%w|\%f)+)+)$/i).test(pattern)) {
 				throw 'Invalid request pattern format.';
 			}
 		
 			// Strip slashes
 			regex = pattern
-				.replace(/\$d/g, '(\\d+)')
-				.replace(/\$w/g, '(\\w+)')
-				.replace(/\$f/g, '(\\d+(\.\\d+)?)')
-				.replace(/\$s/g, '(.*)')
+				.replace(/\%d/g, '(\\d+)')
+				.replace(/\%w/g, '(\\w+)')
+				.replace(/\%f/g, '(\\d+(\.\\d+)?)')
+				.replace(/\%s/g, '(.*)')
 			
 			// Compile the regex for this pattern
 			regex = new RegExp('^' + regex + '$', 'i');

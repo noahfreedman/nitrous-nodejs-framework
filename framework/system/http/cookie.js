@@ -65,7 +65,7 @@ function HttpCookie(name, value, expiry, domain, path) {
 	this.name = name;
 	this.value = value;
 	this.domain = domain;
-	this.path = path;
+	this.path = path ? path : '/';
 	
 	
 	if(expiry) {

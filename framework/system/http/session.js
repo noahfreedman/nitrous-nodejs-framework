@@ -81,6 +81,8 @@ $.object.extend(HttpSession.prototype,
 			
 			// Get the session file name.
 			var fileName = this._getSessionFileName(this.id);
+			
+			$.debug('HttpSession: writting to file "' + fileName + '"');
 			$fs.writeFile(fileName, JSON.stringify(
 				this.data
 			));

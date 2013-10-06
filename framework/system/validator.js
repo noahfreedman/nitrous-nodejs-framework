@@ -88,30 +88,144 @@ $.object.extend(Validator.prototype,
 		 * @param callback(success) callback
 		 *	The validation result reporting callback.
 		 */
-		numeric: function(document, attribute, value, flags, callback) {
+		numeric: function(document, attribute, value, options, callback) {
 		
 			// Default validator options
-			var options = {
+			var flags = {
 				integer: true,
 				required: false
 			};
 			
 			// Apply the given options
-			if(flags) {
-				$.object.extend(options, flags);
+			if(options) {
+				$.object.extend(flags, options);
 			}
 			
 			// Required undefined value or incorrect type
-			if((options.required && !value) || ('string' !== typeof value)) {
+			if((flags.required && !value) || ('string' !== typeof value)) {
 				callback.call(this, false);
 				return;
 			}
 			
 			// Determine the regex to use
-			var regex = options.integer ? 
+			var regex = flags.integer ? 
 				(/^\d+$/) : (/^\d+(\.\d+)?$/);
 				
 			callback.call(this, regex.test(value));
+		},
+		
+		/**
+		 * Makes sure the value is an instance of array.
+		 *
+		 * @param object document
+		 *	The document being validated.
+		 *
+		 * @param string attribute
+		 *	The attribute being validated.
+		 *
+		 * @param mixed value
+		 *	The value being validated.
+		 *
+		 * @param object|undefined options
+		 *	An object containing additional options for this validator.
+		 *
+		 * @param callback(success) callback
+		 *	The validation result reporting callback.
+		 */
+		array: function(document, attribute, value, options, callback) {
+		
+			// Ignore non required values
+			if(!options.required && (value === undefined || value === null)) {
+				callback.call(this, true);
+				return;
+			}
+			
+			callback.call(this, (value instanceof Array));
+					
+		},
+		
+		/**
+		 * Makes sure the value is an instance of array.
+		 *
+		 * @param object document
+		 *	The document being validated.
+		 *
+		 * @param string attribute
+		 *	The attribute being validated.
+		 *
+		 * @param mixed value
+		 *	The value being validated.
+		 *
+		 * @param object|undefined options
+		 *	An object containing additional options for this validator.
+		 *
+		 * @param callback(success) callback
+		 *	The validation result reporting callback.
+		 */
+		bool: function(document, attribute, value, options, callback) {
+		
+			// Build the flags object.
+			var flags = $.object.extend({
+				required: false,
+				strict: false
+			}, options);
+			
+			// Non required values
+			if(!options.required && (value === undefined || value === null)) {
+				console.log('> step 1');
+				callback.call(this, true);
+			}
+			
+			// The given value is not a boolean
+			else if(options.strict && 'boolean' !== typeof value) {
+				console.log('> step 2');
+				callback.call(this, false);
+			}
+			
+			// Valid
+			else {
+				console.log('> step 3');
+				document[attribute] = 'string' === typeof value ?
+					(value === '1' || value === 'true') : !!value;
+				callback.call(this, true);
+			}
+		
+		},
+		
+		/**
+		 * Makes sure the value has the required length.
+		 *
+		 * @param object document
+		 *	The document being validated.
+		 *
+		 * @param string attribute
+		 *	The attribute being validated.
+		 *
+		 * @param mixed value
+		 *	The value being validated.
+		 *
+		 * @param object|undefined options
+		 *	An object containing additional options for this validator.
+		 *
+		 * @param callback(success) callback
+		 *	The validation result reporting callback.
+		 */
+		length: function(document, attribute, value, options, callback) {
+		
+			// Required value with no length
+			if(options.required && (value === null || value === undefined)) {
+				callback.call(this, true);
+				return;
+			}
+			
+			// Determine the length
+			var length = value ? value.length : 0;
+			var minimum = options.minimum ? options.minimum : 0;
+			var maximum = options.maximum ? options.maximum : 0;
+			
+			var success = length >= minimum && (maximum < 1 || length <= maximum);
+			callback.call(this, success);
+		
 		}
 	
 	},
