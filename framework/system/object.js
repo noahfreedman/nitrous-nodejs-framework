@@ -131,10 +131,18 @@ module.exports = {
 				// Get the property types
 				var atype = typeof avalue;
 				var btype = typeof bvalue;
+				var aarray = avalue instanceof Array;
+				var barray = bvalue instanceof Array;
 				
 				// Type mismatch
-				if(atype !== btype) {
+				if(atype !== btype || aarray !== barray) {
 					throw 'Type mismatch for property "' + property + '"';
+				}
+				
+				// Override arrays
+				if(barray) {
+					base[property] = $.array.clone(avalue);
+					continue;
 				}
 				
 				// Extend objects recursively

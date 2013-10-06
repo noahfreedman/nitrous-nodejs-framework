@@ -399,6 +399,8 @@ $.object.extend(Validator.prototype,
 		var unsafe = this._getUnsafeAttributes(event);
 		var rules = schema.rules;
 		
+		$.debug('Validator: event="' + event + '"');
+		
 		// Delete unsafe attributes the old way, for performance reasons
 		for(var i in unsafe) {
 			delete document[unsafe[i]];
@@ -498,9 +500,15 @@ $.object.extend(Validator.prototype,
 			var rule = rules[i];
 			
 			var events = rule[2];
+			$.debug(
+				'Validator: rule="' + rule[0] + 
+				'"; attributes="' + rule[1].join("', '") + 
+				'"; events="' + (rule[2] ? rule[2].join('", "') : 'undefined') + '"'
+			);
 			
 			// Make sure the rule is applicable to this event
-			if(events && events.indexOf(event) < -1) {
+			if(events && events.indexOf(event) < 0) {
+				$.debug('Validator: skipping not applicable rule.');
 				continue;
 			}
 			
@@ -635,9 +643,7 @@ $.object.extend(Validator.prototype,
 	setCustomValidator: function(name, callback) {
 		this._validators[name] = function(document, attribute, 
 				value, options, _callback) {
-				
 			_callback.call(this, callback.call(undefined, document, attribute, value, options));
-			
 		};
 	}
 	
