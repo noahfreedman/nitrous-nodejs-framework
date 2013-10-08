@@ -213,8 +213,8 @@ $.object.extend(Validator.prototype,
 		length: function(document, attribute, value, options, callback) {
 		
 			// Required value with no length
-			if(options.required && (value === null || value === undefined)) {
-				callback.call(this, true);
+			if(value === null || value === undefined) {
+				callback.call(this, !options.required);
 				return;
 			}
 			

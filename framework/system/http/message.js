@@ -185,7 +185,10 @@ $.object.extend(HttpMessage.prototype,
 			if(part.upload) {
 				
 				// Write the chunk into the temporary file handle
-				var handle = part.file._handle;
+				var file = part.file;
+				var handle = file._handle;
+				
+				file.length += length;
 				$fs.writeSync(handle, buffer, 0, length);
 				
 				
@@ -208,8 +211,14 @@ $.object.extend(HttpMessage.prototype,
 			if(part.upload) {
 			
 				// Close the temporary file handle and register
-				$fs.closeSync(part.file._handle);
-				$.httpQuery.set(files, name, part.file);
+				var file = part.file;
+				var handle = file._handle;
+				$fs.closeSync(handle);
+				
+				// Define the file part if length > 0
+				if(file.length > 0) {
+					$.httpQuery.set(files, name, file);
+				}
 			
 			} else {
 			

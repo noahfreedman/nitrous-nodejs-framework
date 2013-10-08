@@ -21,6 +21,7 @@
 
 $.using(
 
+	'fs',
 	'http',
 	'querystring',
 	
@@ -468,7 +469,7 @@ $.object.extend(CouchDatabase.prototype,
 		var buffer = new Buffer(4096);
 		var length;
 		
-		while((length = $fd.readSync(handle, buffer, 0, 4096, null)) > 0) {
+		while((length = $fs.readSync(handle, buffer, 0, 4096, null)) > 0) {
 			request.write(buffer, 'binary');
 		}
 		

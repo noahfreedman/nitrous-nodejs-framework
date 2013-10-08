@@ -49,9 +49,25 @@ function HttpUploadedFile(part) {
 	
 	// Determine the name of the uploaded file
 	this._handle = handle;
+	this._path = fileName;
 	this.name = meta.filename ? meta.filename : 'unknown';
 	this.extension = $path.extname(this.name);
-	this.mime = part.contentType;
+	this.type = part.contentType;
+	this.length = 0;
+
+};
+
+HttpUploadedFile.prototype = {
+
+	/**
+	 * Returns the absolute path to the uploaded file.
+	 *
+	 * @return string
+	 *	The uploaded file path.
+	 */
+	getPath: function() {
+		return this._path;
+	}
 
 };
 
