@@ -127,7 +127,9 @@ $.object.extend(CouchDatabase.prototype,
 					var value = query[property];
 					
 					// JSON stringify the value if needed
-					if(property === 'key' || property === 'keys') {
+					if(property === 'key' || property === 'keys' || 
+							property === 'startkey' || property === 'endkey') {
+							
 						value = JSON.stringify(value);
 					}
 				
@@ -404,6 +406,76 @@ $.object.extend(CouchDatabase.prototype,
 			});
 		}).end();
 	
+	},
+	
+	
+	setAttachment: function(document, name, type, file) {
+	
+		// Load the remaining arguments according to length
+		var context, callback;
+		
+		switch(arguments.length) {
+		
+			case 5: 
+				callback = arguments[4];
+			break;
+			
+			case 6:
+				context = arguments[4];
+				callback = arguments[5];
+			break;
+			
+			default:
+				throw 'Invalid argument count.';
+		
+		}
+		
+		// Get the file handler
+		var handle = $fs.openSync(file, 'r');
+		
+		// Assemble the request options
+		var options = this._buildRequestOptions('PUT', 
+			[ this.database, document._id, name ], { rev: document._rev }
+		);
+		
+		options.headers['Content-Type'] = type;
+		options.headers['Transfer-Encoding'] = 'chunked';
+		
+		$.debug('CouchDB: PUT ' + options.path);
+		
+		var _this = this;
+		
+		// Create and execute the request
+		var request = $http.request(options, function(message) {
+			_this._prepareRequestedMessage(message, function(response) {
+		
+				// Get the message body
+				var body = response.body;
+			
+				// Execute the callback if no further errors are detected
+				if(!body.error) {
+					callback.call(context, body.ok, body.id, body.rev);
+					return;
+				}
+				
+				// Log the couch error message
+				$.error('CouchDatabase: error=' + body.error + '; reason=' + body.reason);
+		
+			});
+		});
+		
+		// Write the attachment data
+		var buffer = new Buffer(4096);
+		var length;
+		
+		while((length = $fd.readSync(handle, buffer, 0, 4096, null)) > 0) {
+			request.write(buffer, 'binary');
+		}
+		
+		// Close the file handle and finish the request
+		$fs.closeSync(handle);
+		request.end();
+		
 	}
 	
 });
