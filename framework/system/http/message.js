@@ -28,9 +28,10 @@ $.using(
 	
 	'system.object',
 	'system.string',
+	'system.http.part',
+	'system.http.query',
 	'system.http.exception',
-	'system.http.uploadedFile',
-	'system.http.part'
+	'system.http.uploadedFile'
 
 );
 
@@ -208,7 +209,7 @@ $.object.extend(HttpMessage.prototype,
 			
 				// Close the temporary file handle and register
 				$fs.closeSync(part.file._handle);
-				files[name] = part.file;
+				$.httpQuery.set(files, name, part.file);
 			
 			} else {
 			
@@ -237,7 +238,7 @@ $.object.extend(HttpMessage.prototype,
 				else if(contentType === 'application/x-www-form-urlencoded') {
 				
 					try {
-						content = $querystring.parse(raw);
+						content = $.httpQuery.parse(raw);
 					} catch (e) {
 						return _raise_error(9, 'Bad format for part "' + name + '" of type "application/json".');
 					}
@@ -246,7 +247,7 @@ $.object.extend(HttpMessage.prototype,
 				
 				// Define the part content in the body and itself
 				part.content = content;
-				body[name] = content;
+				$.httpQuery.set(body, name, content);
 			
 			}
 
@@ -465,7 +466,7 @@ $.object.extend(HttpMessage.prototype,
 		this._readMessagePayload(message, 524288, function(content) {
 		
 			// Define the message body and invoke the callback
-			this.body = $querystring.parse(content);
+			this.body = $.httpQuery.parse(content);
 			callback.call(this);
 		
 		});
@@ -592,7 +593,7 @@ $.object.extend(HttpMessage.prototype,
 		// Query string
 		var rawQuery = url.query;
 		this.rawQuery = rawQuery;
-		this.query = rawQuery ? $querystring.parse(rawQuery) : {};
+		this.query = rawQuery ? $.httpQuery.parse(rawQuery) : {};
 		
 		// Files and multipart content
 		this.files = {};
