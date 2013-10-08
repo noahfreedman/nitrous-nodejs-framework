@@ -185,11 +185,21 @@ module.exports = {
 		return this._setRecursive(-1, object, 0, properties, value);
 	},
 	
-	parse: function(value) {
+	/**
+	 * Parses the given raw query string and builds a new object based on
+	 * it's properties and values.
+	 *
+	 * @param string query
+	 *	The query string to parse.
+	 *
+	 * @return object
+	 *	The resulting object.
+	 */
+	parse: function(query) {
 	
 		// Parse the URL encoded value into an object
 		var object = {};
-		var content = $querystring.parse(value);
+		var content = $querystring.parse(query);
 		
 		// Define each property recursively
 		for(var property in content) {
