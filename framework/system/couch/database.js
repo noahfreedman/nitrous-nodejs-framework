@@ -61,6 +61,10 @@ function CouchDatabase(protocol, host, port, database, user, password) {
 	this.port = port ? port : 5984;
 	this.database = database;
 	
+	// Base URL
+	this.serviceUrl = this.protocol + '://' + this.host + ':' + this.port + '/';
+	this.baseUrl = this.serviceUrl + this.database;
+	
 	// Authentication data
 	this.authentication = user ? 
 		(
