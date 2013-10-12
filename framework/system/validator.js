@@ -135,7 +135,9 @@ $.object.extend(Validator.prototype,
 		array: function(document, attribute, value, options, callback) {
 		
 			// Ignore non required values
-			if(!options.required && (value === undefined || value === null)) {
+			if((!options || !options.required) && 
+				(value === undefined || value === null)) {
+				
 				callback.call(this, true);
 				return;
 			}
@@ -171,13 +173,13 @@ $.object.extend(Validator.prototype,
 			}, options);
 			
 			// Non required values
-			if(!options.required && (value === undefined || value === null)) {
+			if(!flags.required && (value === undefined || value === null)) {
 				console.log('> step 1');
 				callback.call(this, true);
 			}
 			
 			// The given value is not a boolean
-			else if(options.strict && 'boolean' !== typeof value) {
+			else if(flags.strict && 'boolean' !== typeof value) {
 				console.log('> step 2');
 				callback.call(this, false);
 			}
@@ -211,7 +213,7 @@ $.object.extend(Validator.prototype,
 		 *	The validation result reporting callback.
 		 */
 		length: function(document, attribute, value, options, callback) {
-		
+				
 			// Required value with no length
 			if(value === null || value === undefined) {
 				callback.call(this, !options.required);
