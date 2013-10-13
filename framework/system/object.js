@@ -100,8 +100,13 @@ module.exports = {
 			
 			var argument = arguments[i];
 			
+			// Skip undefined arguments
+			if(argument === undefined) {
+				continue;
+			}
+			
 			// Make sure the given argument is an object
-			if('object' !== typeof argument) {
+			if(argument === null || 'object' !== typeof argument) {
 				throw 'Non-object type given for extend.';
 			}
 			

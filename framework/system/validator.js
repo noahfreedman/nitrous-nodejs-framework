@@ -90,25 +90,22 @@ $.object.extend(Validator.prototype,
 		 */
 		numeric: function(document, attribute, value, options, callback) {
 		
-			// Default validator options
-			var flags = {
+			// Build the local options
+			var options = $.object.extend({
+			
 				integer: true,
 				required: false
-			};
-			
-			// Apply the given options
-			if(options) {
-				$.object.extend(flags, options);
-			}
+				
+			}, options);
 			
 			// Required undefined value or incorrect type
-			if((flags.required && !value) || ('string' !== typeof value)) {
+			if((options.required && !value) || ('string' !== typeof value)) {
 				callback.call(this, false);
 				return;
 			}
 			
 			// Determine the regex to use
-			var regex = flags.integer ? 
+			var regex = options.integer ? 
 				(/^\d+$/) : (/^\d+(\.\d+)?$/);
 				
 			callback.call(this, regex.test(value));
@@ -134,8 +131,15 @@ $.object.extend(Validator.prototype,
 		 */
 		array: function(document, attribute, value, options, callback) {
 		
+			// Build the local options
+			var options = $.object.extend({
+			
+				required: false
+				
+			}, options);
+		
 			// Ignore non required values
-			if((!options || !options.required) && 
+			if(!options.required && 
 				(value === undefined || value === null)) {
 				
 				callback.call(this, true);
@@ -213,6 +217,15 @@ $.object.extend(Validator.prototype,
 		 *	The validation result reporting callback.
 		 */
 		length: function(document, attribute, value, options, callback) {
+		
+			// Build the local options
+			var options = $.object.extend({
+			
+				required: false,
+				minimum: 0,
+				maximum: 255
+				
+			}, options);
 				
 			// Required value with no length
 			if(value === null || value === undefined) {
@@ -504,8 +517,8 @@ $.object.extend(Validator.prototype,
 			var events = rule[2];
 			$.debug(
 				'Validator: rule="' + rule[0] + 
-				'"; attributes="' + rule[1].join("', '") + 
-				'"; events="' + (rule[2] ? rule[2].join('", "') : 'undefined') + '"'
+				'"; attributes=["' + rule[1].join('", "') + 
+				'"]; events="' + (rule[2] ? rule[2].join('", "') : 'undefined') + '"'
 			);
 			
 			// Make sure the rule is applicable to this event
