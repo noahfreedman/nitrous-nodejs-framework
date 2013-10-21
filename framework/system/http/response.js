@@ -46,11 +46,12 @@ function HttpResponse(server, response) {
 	// Default values
 	this.statusCode = 200;
 	this.contentType = 'text/plain';
-	this.headers = {};
 }
 
 $.object.extend(HttpResponse.prototype,
 	$.eventEmitter.prototype, {
+
+	headers: {},
 
 	/**
 	 * Packs the response headers by packing this instance 'headers' object
