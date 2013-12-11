@@ -28,7 +28,7 @@ $path = require('path');
 function Nitrous() {
 
 	// Determine the main module file name
-	var pathSeparator = $path.sep;
+	var pathSeparator = $path.sep = $path.sep || "/";
 	var mainScript = require.main.filename;
 	var mainDirectoryIndex = mainScript.lastIndexOf(pathSeparator);
 	var mainDirectory = mainDirectoryIndex > 0 ?
